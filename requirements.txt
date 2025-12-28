@@ -1,0 +1,18 @@
+ipython
+ipykernel
+nbformat
+pandas
+numpy
+matplotlib
+seaborn
+tensorflow==2.14.0  # Linux/Windows (NVIDIA GPU or CPU)
+# tensorflow-macos==2.14.0 # macOS Apple Silicon only
+# tensorflow-metal==1.1.0 # macOS Apple Silicon GPU only
+keras==2.14.0
+cycler
+alive_progress
+umap-learn
+sdv==0.18.0
+protobuf
+pydot
+graphviz

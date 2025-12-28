@@ -1,0 +1,35 @@
+## Parameter dictionary for CardiCat
+
+{
+"embed_th":3,
+"epochs":150,
+"batch_size":2000,
+"learn_rate":0.0005 ,# 0.0004 
+"latent_dim":15,
+"mixed_loss":False,
+"weighted_loss":True,
+"recon_factor":5, # 
+"kl_factor":1, 
+"emb_regularization":True,
+"emb_reg_factor":1,
+"hot_factor":1.0, # if mixed_loss
+"emb_factor":1.0, # if mixed_loss
+"num_factor":1.0, # if mixed_loss
+"show_figs":True,
+"save_figs":False,
+"save_files":True,
+"train_ratio":1,
+"lib_path":"/Users/CardiCat/",
+"data_path":"/Users/CardiCat_data/",
+"output_path":"output/",
+"comment":"embedding",
+
+## EXPERIMENTAL
+
+"cVAE":False,
+"cVAE_mask":False,
+"attention":False,
+"resampling":False,
+"onehot_ind_cat": False,
+} 
+
