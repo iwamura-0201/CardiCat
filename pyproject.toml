@@ -1,0 +1,23 @@
+[project]
+name = "cardicat"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "alive-progress>=3.3.0",
+    "cycler>=0.12.1",
+    "graphviz>=0.21",
+    "ipykernel>=7.1.0",
+    "ipython>=9.8.0",
+    "matplotlib>=3.10.8",
+    "nbformat>=5.10.4",
+    "numpy>=1.26.4",
+    "pandas>=1.5.3",
+    "protobuf>=4.25.8",
+    "pydot>=4.0.1",
+    "sdv==0.18.0",
+    "seaborn>=0.13.2",
+    "tensorflow[and-cuda]>=2.16.0",
+    "umap-learn>=0.5.9.post2",
+]

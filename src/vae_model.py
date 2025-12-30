@@ -43,8 +43,8 @@ def sampling_model(distribution_params):
     """
 
     mean, log_var = distribution_params
-    epsilon = K.random_normal(shape=K.shape(mean), mean=0.0, stddev=1.0)
-    return mean + K.exp(log_var / 2) * epsilon  # CHECK
+    epsilon = tf.random.normal(shape=tf.shape(mean), mean=0.0, stddev=1.0)
+    return mean + tf.exp(log_var / 2) * epsilon  # CHECK
 
 
 def sampling(input_1, input_2):
@@ -126,9 +126,11 @@ def train_step(
         latent = final([mean, log_var])
 
         cond = {"cond_" + key: batch["cond_" + key] for key in tmpEmb}
-        cond["dec_latent_input"] = latent
         # get forward pass of decoder:
-        generated_x = dec(cond, training=True)
+        if not tmpEmb:
+            generated_x = dec(latent, training=True)
+        else:
+            generated_x = dec(cond, training=True)
         # Normalize original x for reconstruction term:
         x = cod(batch, training=False)
         batch_actual_size = x.shape[0]
@@ -144,11 +146,10 @@ def train_step(
         loss = mse_loss_factor + kl_loss
 
         ## Adding embedding regularization:
-        emb_weights = {
-            weights.name.split("/")[0]: weights.numpy()
-            for weights in enc.weights
-            if weights.name.split("_")[0] == "emb"
-        }
+        emb_weights = {}
+        for layer in enc.layers:
+            if layer.name.startswith("emb_") and hasattr(layer, "trainable_weights") and layer.trainable_weights:
+                emb_weights[layer.name] = layer.trainable_weights[0]
         tmp = [tf.math.reduce_variance(emb_weights[emb]) for emb in emb_weights.keys()]
         emb_mse = MSE()
         emb_reg_loss = emb_mse(tmp, emb_init_var)
@@ -159,8 +160,11 @@ def train_step(
     # Registering gradient tape:
     gradients_of_enc = encoder.gradient(loss, enc.trainable_variables)
     gradients_of_dec = decoder.gradient(loss, dec.trainable_variables)
-    optimizer.apply_gradients(zip(gradients_of_enc, enc.trainable_variables))
-    optimizer.apply_gradients(zip(gradients_of_dec, dec.trainable_variables))
+    
+    # Combine gradients and variables for a single optimizer call
+    gradients = gradients_of_enc + gradients_of_dec
+    variables = enc.trainable_variables + dec.trainable_variables
+    optimizer.apply_gradients(zip(gradients, variables))
 
     return loss_dict, loss_logs, batch_actual_size
 
@@ -285,11 +289,14 @@ def train_high_vae(
             losses.append(epoch_loss)
 
             ## TEST EMB WEIGHTS
-            emb_weights = {
-                weights.name.split("/")[0]: weights.numpy()
-                for weights in enc.weights
-                if weights.name.split("_")[0] == "emb"
-            }
+            emb_weights = {}
+            for layer in enc.layers:
+                if (
+                    layer.name.startswith("emb_")
+                    and hasattr(layer, "trainable_weights")
+                    and layer.trainable_weights
+                ):
+                    emb_weights[layer.name] = layer.trainable_weights[0].numpy()
 
         bar.title("Training complete. Final loss: {:,.2f}".format(np.mean(loss_[:-1])))
         bar.title(

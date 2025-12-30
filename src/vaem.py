@@ -42,7 +42,7 @@ def mvae(uni_input,uni_feature,latent_dim,train_series,batch_size,epochs,optimiz
         return codex_model
 
     def kl(mean, log_var):
-        kl_loss =  -0.5 * K.sum(1 + log_var - K.square(mean) - K.exp(log_var), axis = 1)
+        kl_loss =  -0.5 * tf.reduce_sum(1 + log_var - tf.square(mean) - tf.exp(log_var), axis = 1)
         return kl_loss
     
     # This annotation (`@tf.function`) causes the function to be "compiled".
@@ -139,7 +139,7 @@ def multiVAE(inputs,features,latent_dim,data_input,batch_size,epochs,optimizer):
         return codex_model
 
     def kl(mean, log_var):
-        kl_loss =  -0.5 * K.sum(1 + log_var - K.square(mean) - K.exp(log_var), axis = 1)
+        kl_loss =  -0.5 * tf.reduce_sum(1 + log_var - tf.square(mean) - tf.exp(log_var), axis = 1)
         return kl_loss
     
     # This annotation (`@tf.function`) causes the function to be "compiled".

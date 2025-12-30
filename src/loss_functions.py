@@ -20,7 +20,7 @@ def kl(mean, log_var):
     """
     # -0.5 * torch.sum(1 + logvar - mu**2 - logvar.exp())
     kl_loss = -0.5 * tf.reduce_sum(
-        1 + log_var - tf.square(mean) - K.exp(log_var), axis=1
+        1 + log_var - tf.square(mean) - tf.exp(log_var), axis=1
     )
     return tf.reduce_mean(kl_loss) / mean.shape[1]
 

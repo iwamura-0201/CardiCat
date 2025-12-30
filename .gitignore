@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# data
+data/
+eventid_content/
+embedded/
+
 
 # LEe's addons:
 .DS_Store
@@ -135,5 +140,3 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# data
-data/

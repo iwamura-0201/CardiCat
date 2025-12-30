@@ -106,11 +106,14 @@ def get_pred(
     print("Finished Translating 1hot columns to integers")
     # Getting the label   of embedded features:
     if param_dict["emb_loss"]:
-        emb_weights = {
-            weights.name.split("/")[0]: weights.numpy()
-            for weights in enc.weights
-            if weights.name.split("_")[0] == "emb"
-        }
+        emb_weights = {}
+        for layer in enc.layers:
+            if (
+                layer.name.startswith("emb_")
+                and hasattr(layer, "trainable_weights")
+                and layer.trainable_weights
+            ):
+                emb_weights[layer.name] = layer.trainable_weights[0].numpy()
         gen_x_emb = [
             [
                 (
